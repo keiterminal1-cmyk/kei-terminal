@@ -42,3 +42,43 @@
   padding:10px;
 }
 .support-note{margin-top:16px}
+
+/* v3.3 Data Status Badges */
+.data-badge{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  vertical-align:middle;
+  margin-left:8px;
+  padding:4px 7px;
+  border-radius:999px;
+  font-size:10px;
+  font-weight:900;
+  letter-spacing:.08em;
+  border:1px solid var(--border);
+}
+.data-badge.live{
+  color:#061b12;
+  background:linear-gradient(135deg,var(--accent),#baffdf);
+  border:none;
+}
+.data-badge.derived{
+  color:#ffe08a;
+  background:rgba(255,208,80,.12);
+  border-color:rgba(255,208,80,.35);
+}
+.data-badge.manual{
+  color:#b8c7c1;
+  background:rgba(255,255,255,.06);
+  border-color:rgba(255,255,255,.18);
+}
+.core-top{position:relative}
+.core-top .data-badge{
+  position:absolute;
+  right:0;
+  top:0;
+}
+.terminal-footer .data-badge{
+  margin-left:0;
+  margin-right:6px;
+}

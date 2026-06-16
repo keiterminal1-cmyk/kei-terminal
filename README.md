@@ -68,3 +68,18 @@ v1.6: Added Support KEI donation section.
 - iKAS derived from KAS 1:1 as wrapped KAS gas token
 - ZAP remains demo/manual
 - Auto-refresh every 60 seconds
+
+## v3.2 Dynamic KEI Score
+- KEI Score is now dynamic
+- Liquidity updates from market cap + volume
+- Momentum updates from 24h price change
+- Risk adjusts based on market cap, volume and data source
+- Opportunity Score uses dynamic KEI + momentum + safety
+- Ecosystem Health updates from dynamic KEI scores
+
+## v3.3 Data Status
+- Shows LIVE badge for CoinGecko assets
+- Shows DERIVED badge for iKAS
+- Shows MANUAL badge for demo/manual assets
+- Ranking cards now show data status
+- Footer explains data status types

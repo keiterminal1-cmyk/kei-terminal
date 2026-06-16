@@ -263,3 +263,228 @@ window.addEventListener("load", () => {
   setTimeout(fetchEcosystemLiveData, 900);
   setInterval(fetchEcosystemLiveData, 60000);
 });
+
+
+/* v3.2 Dynamic KEI Score Engine
+   KEI Score now adapts from:
+   - Development base score
+   - Adoption base score
+   - Liquidity score from market cap + volume
+   - Community base score
+   - Fundamentals base score
+   - Momentum from 24h price change
+   - Risk penalty
+*/
+function clampScore(v){
+  return Math.max(0, Math.min(100, Math.round(Number(v || 0))));
+}
+
+function liquidityLiveScore(p){
+  const mc = Number(p.marketCap || 0);
+  const vol = Number(p.volume24h || 0);
+
+  let mcScore = 0;
+  if(mc >= 1000000000) mcScore = 95;
+  else if(mc >= 100000000) mcScore = 82;
+  else if(mc >= 25000000) mcScore = 68;
+  else if(mc >= 5000000) mcScore = 52;
+  else if(mc >= 1000000) mcScore = 35;
+  else if(mc > 0) mcScore = 20;
+
+  let volScore = 0;
+  if(vol >= 50000000) volScore = 95;
+  else if(vol >= 5000000) volScore = 80;
+  else if(vol >= 500000) volScore = 62;
+  else if(vol >= 100000) volScore = 45;
+  else if(vol > 0) volScore = 25;
+
+  if(!mc && !vol) return Number(p.liquidity || 0);
+  return clampScore((mcScore * 0.55) + (volScore * 0.45));
+}
+
+function momentumLiveScore(p){
+  const ch = p.live && typeof p.live.priceChange24h === "number" ? p.live.priceChange24h : null;
+  if(ch === null) return Number(p.momentumRaw || 0);
+
+  if(ch >= 20) return 95;
+  if(ch >= 10) return 88;
+  if(ch >= 5) return 78;
+  if(ch >= 2) return 68;
+  if(ch >= 0) return 58;
+  if(ch >= -3) return 48;
+  if(ch >= -8) return 35;
+  return 22;
+}
+
+function dynamicRiskScore(p){
+  let risk = Number(p.riskRaw || 60);
+
+  const mc = Number(p.marketCap || 0);
+  const vol = Number(p.volume24h || 0);
+  const source = p.live?.source || "";
+
+  if(mc >= 1000000000) risk -= 18;
+  else if(mc >= 100000000) risk -= 10;
+  else if(mc >= 10000000) risk -= 4;
+  else if(mc > 0 && mc < 3000000) risk += 8;
+
+  if(vol >= 10000000) risk -= 8;
+  else if(vol >= 500000) risk -= 4;
+  else if(vol > 0 && vol < 100000) risk += 6;
+
+  if(source === "CoinGecko") risk -= 4;
+  if(source && source.includes("Derived")) risk += 8;
+  if(!source) risk += 5;
+
+  return clampScore(risk);
+}
+
+function dynamicKeiScore(p){
+  const development = Number(p.development || 0);
+  const adoption = Number(p.adoption || 0);
+  const liquidity = liquidityLiveScore(p);
+  const community = Number(p.community || 0);
+  const fundamentals = Number(p.fundamentals || 0);
+  const momentum = momentumLiveScore(p);
+  const risk = dynamicRiskScore(p);
+
+  const base =
+    development * 0.24 +
+    adoption * 0.20 +
+    liquidity * 0.22 +
+    community * 0.12 +
+    fundamentals * 0.12 +
+    momentum * 0.10;
+
+  const penalty = risk > 70 ? 8 : risk > 55 ? 4 : risk < 30 ? -3 : 0;
+  return clampScore(base - penalty);
+}
+
+/* Override original static KEI functions */
+function keiScore(p){
+  return dynamicKeiScore(p);
+}
+
+function opportunityScore(p){
+  const kei = dynamicKeiScore(p);
+  const momentum = momentumLiveScore(p);
+  const safety = 100 - dynamicRiskScore(p);
+  return clampScore((kei * 0.45) + (momentum * 0.35) + (safety * 0.20));
+}
+
+/* Improve project details with dynamic score breakdown */
+function scoreBreakdownHtml(p){
+  const liquidity = liquidityLiveScore(p);
+  const momentum = momentumLiveScore(p);
+  const risk = dynamicRiskScore(p);
+  return `
+    <div class="metrics">
+      <div class="metric"><strong>${liquidity}/100</strong><span>Live Liquidity</span></div>
+      <div class="metric"><strong>${momentum}/100</strong><span>Live Momentum</span></div>
+      <div class="metric"><strong>${risk}/100</strong><span>Dynamic Risk</span></div>
+      <div class="metric"><strong>${p.live?.source || "Manual"}</strong><span>Data Source</span></div>
+    </div>
+  `;
+}
+
+/* Patch openProject to append live score breakdown if modal exists */
+const originalOpenProject_v32 = typeof openProject === "function" ? openProject : null;
+if(originalOpenProject_v32){
+  openProject = function(id){
+    originalOpenProject_v32(id);
+    const p = projects.find(x => x.id === id);
+    const card = document.getElementById("modalCard");
+    if(p && card){
+      card.innerHTML += `<h3 style="margin-top:20px">Dynamic KEI Engine</h3>${scoreBreakdownHtml(p)}`;
+    }
+  }
+}
+
+
+/* v3.3 Data Status Badges */
+function dataStatus(p){
+  const source = p.live?.source || "";
+  const status = p.live?.status || "";
+
+  if(source === "CoinGecko" || status === "live"){
+    return {label:"LIVE", cls:"live", text:"Live data"};
+  }
+  if(source.includes("Derived") || status === "derived"){
+    return {label:"DERIVED", cls:"derived", text:"Derived data"};
+  }
+  return {label:"MANUAL", cls:"manual", text:"Manual/demo data"};
+}
+
+function statusBadgeHtml(p){
+  const s = dataStatus(p);
+  return `<span class="data-badge ${s.cls}" title="${s.text}">${s.label}</span>`;
+}
+
+/* Override core card renderer with data badges */
+function renderCoreProjects(){
+  const el=document.getElementById("coreGrid"); if(!el) return;
+  const core=CORE_SYMBOLS.map(s=>projects.find(p=>(p.symbol||"").toUpperCase()===s)).filter(Boolean);
+  el.innerHTML=core.map(p=>{
+    const ch=p.live?.priceChange24h;
+    const chText=typeof ch==="number" ? `${ch>0?"+":""}${ch.toFixed(2)}% ↑` : "--";
+    return `<div class="core-card">
+      <div class="core-top">
+        <div class="coin-logo">${(p.logoText||p.symbol).slice(0,4)}</div>
+        <div><h3>${p.symbol}</h3><div class="sub">${p.name}</div></div>
+        ${statusBadgeHtml(p)}
+      </div>
+      <div class="core-price-row"><div class="core-price">${p.price?usd(p.price):"--"}</div><div class="chg">${chText}</div></div>
+      <div class="core-meta">
+        <span><small>Market Cap</small><b>${formatCap(p.marketCap)}</b></span>
+        <span><small>24h Volume</small><b>${formatCap(p.volume24h)}</b></span>
+        <span><small>KEI Score</small><b>${keiScore(p)}/100</b></span>
+        <span><small>Opportunity</small><b>${opportunityScore(p)}/100</b></span>
+      </div>
+      <div class="card-actions">
+        <button class="btn secondary smallbtn" onclick="openProject('${p.id}')">${tr("details")}</button>
+        <button class="btn primary smallbtn" onclick="toggleWatch('${p.id}')">${tr("watchlistAdd")}</button>
+      </div>
+    </div>`;
+  }).join("");
+}
+
+/* Override project ranking renderer with data badges */
+const originalRenderProjects_v33 = typeof renderProjects === "function" ? renderProjects : null;
+if(originalRenderProjects_v33){
+  renderProjects = function(){
+    const q=(document.getElementById("searchInput")?.value||"").toLowerCase();
+    const risk=document.getElementById("riskFilter")?.value||"all";
+    const sort=document.getElementById("sortMode")?.value||"kei";
+    const wl=getWatchlist();
+    const grid=document.getElementById("projectGrid");
+    if(!grid)return;
+    grid.innerHTML="";
+    let arr=projects
+      .filter(p=>risk==="all"||p.risk?.en===risk)
+      .filter(p=>[p.name,p.symbol,l(p.category),l(p.description),...(p.tags||[])].join(" ").toLowerCase().includes(q));
+
+    if(sort==="kei")arr.sort((a,b)=>keiScore(b)-keiScore(a));
+    if(sort==="opportunity")arr.sort((a,b)=>opportunityScore(b)-opportunityScore(a));
+    if(sort==="momentum")arr.sort((a,b)=>momentumLiveScore(b)-momentumLiveScore(a));
+    if(sort==="risk")arr.sort((a,b)=>dynamicRiskScore(b)-dynamicRiskScore(a));
+    if(sort==="marketCap")arr.sort((a,b)=>(b.marketCap||0)-(a.marketCap||0));
+
+    arr.forEach(p=>{
+      const saved=wl.includes(p.id);
+      const div=document.createElement("div");
+      div.className="project-card";
+      div.innerHTML=`<div class="card-top"><div><div class="symbol">${p.symbol} ${statusBadgeHtml(p)}</div><h3>${p.name}</h3><div class="price">${usd(p.price)} · MC ${usd(p.marketCap)}</div><p class="desc">${l(p.description)}</p></div><div class="score">${keiScore(p)}</div></div><div class="metrics"><div class="metric"><strong>${opportunityScore(p)}/100</strong><span>${tr("opportunity")}</span></div><div class="metric"><strong>${dynamicRiskScore(p)}/100</strong><span>${tr("risk")}</span></div><div class="metric"><strong>${momentumLiveScore(p)}/100</strong><span>${tr("momentum")}</span></div><div class="metric"><strong>${usd(p.volume24h)}</strong><span>${tr("volume")}</span></div></div><div class="tags">${(p.tags||[]).map(t=>`<span class="tag">${t}</span>`).join("")}</div><div class="card-actions"><button class="btn secondary smallbtn" onclick="openProject('${p.id}')">${tr("details")}</button><button class="btn ${saved?"primary":"secondary"} smallbtn" onclick="toggleWatch('${p.id}')">${saved?tr("saved"):tr("watchlistAdd")}</button></div>`;
+      grid.appendChild(div);
+    });
+  }
+}
+
+/* Update footer/status note */
+window.addEventListener("load", () => {
+  setTimeout(() => {
+    const footer = document.querySelector(".terminal-footer");
+    if(footer){
+      footer.innerHTML = `<span>KEI Terminal</span><span><span class="data-badge live">LIVE</span> CoinGecko</span><span><span class="data-badge derived">DERIVED</span> iKAS</span><span><span class="data-badge manual">MANUAL</span> Early assets</span>`;
+    }
+  }, 1200);
+});
