@@ -1,0 +1,16 @@
+{
+  "name": "Kaspa Radar",
+  "short_name": "KaspaRadar",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#07130f",
+  "theme_color": "#07130f",
+  "description": "Kaspa ecosystem intelligence dashboard.",
+  "icons": [
+    {
+      "src": "assets/favicon.svg",
+      "sizes": "128x128",
+      "type": "image/svg+xml"
+    }
+  ]
+}

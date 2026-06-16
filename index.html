@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kaspa Radar Terminal</title>
+  <meta name="description" content="Kaspa Radar Terminal is a Kaspa ecosystem intelligence dashboard with scores, mining, watchlists and portfolio analytics.">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<nav class="topbar">
+  <div class="brand"><div class="brand-logo">KEI</div><span>KEI TERMINAL</span><b>Intelligence</b></div>
+  <button class="menuBtn" onclick="toggleMenu()">☰</button>
+  <div class="navlinks" id="navlinks">
+    <a href="#dashboard">Dashboard</a>
+    <a href="#core">Ecosystem</a>
+    <a href="#ranking">Projects</a>
+    <a href="#mining">Mining</a>
+    <a href="#portfolio">Portfolio</a>
+    <a href="#watchlist">Watchlist</a>
+    <a href="#support">Support</a>
+    <select id="languageSelect" onchange="setLanguage(this.value)">
+      <option value="en">EN</option>
+      <option value="de">DE</option>
+    </select>
+  </div>
+</nav>
+
+<header id="dashboard" class="hero-terminal">
+  <section class="hero-left">
+    <p class="eyebrow">Kaspa Ecosystem Intelligence</p>
+    <h1 data-i18n="heroTitle">USD-ready intelligence dashboard for Kaspa, mining and ecosystem projects.</h1>
+    <p class="subtitle" data-i18n="heroSubtitle">Track projects, score risks, calculate mining profitability, manage a watchlist and test portfolio scenarios.</p>
+    <div class="hero-actions">
+      <a class="btn primary" href="#ranking" data-i18n="openDashboard">Open dashboard</a>
+    </div>
+  </section>
+
+  <section class="hero-right">
+    <div class="health-card">
+      <div class="health-icon">♥</div>
+      <div>
+        <span data-i18n="ecosystemHealth">Ecosystem Health</span>
+        <strong><b id="ecosystemHealthScore">--</b><small>/100</small></strong>
+      </div>
+      <div class="health-bar"><span id="healthBar"></span></div>
+      <em id="healthLabel">Healthy</em>
+    </div>
+    <div class="side-metrics">
+      <div class="metric-card"><span data-i18n="topOpportunity">Top Opportunity</span><strong id="topOpportunity">--</strong><small id="topOpportunitySub">Opportunity Score</small></div>
+      <div class="metric-card danger"><span data-i18n="highestRisk">Highest Risk</span><strong id="highestRisk">--</strong><small id="highestRiskSub">Risk Score</small></div>
+    </div>
+  </section>
+</header>
+
+<main>
+<section id="core" class="section">
+  <div class="section-title compact">
+    <div><p class="eyebrow">Core Kaspa Ecosystem</p></div>
+    <a class="link-arrow" href="#ranking">View all ecosystem projects →</a>
+  </div>
+  <div id="coreGrid" class="core-grid terminal"></div>
+</section>
+
+<section class="triple-section">
+  <div class="terminal-panel">
+    <div class="panel-title">🔥 <span data-i18n="trendingTitle">Trending Projects</span></div>
+    <div id="trendingGrid" class="terminal-list"></div>
+  </div>
+
+  <div class="terminal-panel">
+    <div class="panel-title">⭐ <span data-i18n="newProjectsTitle">New Projects</span></div>
+    <div id="newProjectsBox" class="terminal-list"></div>
+  </div>
+
+  <div class="terminal-panel">
+    <div class="panel-title">⛏️ <span data-i18n="miningCenterTitle">Mining Center</span></div>
+    <div class="mining-mini">
+      <div><b>KS0 Ultra</b><span>400 GH/s · 100 W</span><strong>$0.0315/day</strong></div>
+      <div><b>KS2</b><span>2 TH/s · 1200 W</span><strong>$0.1397/day</strong></div>
+      <div><b>KS3 / KS5</b><span>8–20 TH/s</span><strong>$0.5584/day</strong></div>
+    </div>
+    <a class="wide-link" href="#mining">Open Mining Center →</a>
+  </div>
+</section>
+
+<section id="ranking" class="section">
+  <div class="section-title">
+    <div><p class="eyebrow">Ecosystem Overview</p><h2 data-i18n="projectRanking">Project Ranking</h2></div>
+    <div class="rowBtns">
+      <button class="btn primary" onclick="fetchAllLiveData()" data-i18n="fetchAllLive">Fetch All Live Data</button>
+      <button class="btn secondary" onclick="simulateLiveRefresh()" data-i18n="simulateRefresh">Simulate Refresh</button>
+    </div>
+  </div>
+  <div class="filters">
+    <input id="searchInput" data-i18n-placeholder="searchPlaceholder" placeholder="Search project">
+    <select id="riskFilter">
+      <option value="all" data-i18n="allRisks">All risks</option>
+      <option value="Low" data-i18n="riskLow">Low</option>
+      <option value="Medium" data-i18n="riskMedium">Medium</option>
+      <option value="Medium-High" data-i18n="riskMediumHigh">Medium-High</option>
+      <option value="High" data-i18n="riskHigh">High</option>
+    </select>
+    <select id="sortMode">
+      <option value="kei" data-i18n="sortKei">Sort: KEI</option>
+      <option value="opportunity" data-i18n="sortOpportunity">Sort: Opportunity</option>
+      <option value="momentum" data-i18n="sortMomentum">Sort: Momentum</option>
+      <option value="risk" data-i18n="sortRisk">Sort: Risk</option>
+      <option value="marketCap" data-i18n="sortMarketCap">Sort: Market Cap</option>
+    </select>
+  </div>
+  <p class="muted" id="apiStatus"></p>
+  <div id="projectGrid" class="grid"></div>
+</section>
+
+<section id="portfolio" class="section two-col">
+  <div>
+    <p class="eyebrow">Portfolio Simulator</p>
+    <h2 data-i18n="portfolioTitle">Portfolio Value</h2><p>Monitor your portfolio performance across Kaspa ecosystem projects.</p>
+    <p data-i18n="portfolioText">Enter token amounts and simulate your portfolio value in dollars.</p>
+    <div id="portfolioInputs" class="calculator"></div>
+  </div>
+  <div class="result-card" id="portfolioResult"></div>
+</section>
+
+<section id="watchlist" class="section">
+  <div class="section-title">
+    <div><p class="eyebrow">Personal Radar</p><h2 data-i18n="watchlistTitle">Watchlist</h2></div>
+    <div class="rowBtns"><button class="btn secondary" onclick="resetWatchlist()" data-i18n="clearWatchlist">Clear watchlist</button><button class="btn primary" onclick="exportWatchlist()" data-i18n="exportWatchlist">Export watchlist</button></div>
+  </div>
+  <div id="watchlistBox" class="watchlist-box"></div>
+</section>
+
+<section id="mining" class="section two-col">
+  <div>
+    <p class="eyebrow">Mining Intelligence</p>
+    <h2 data-i18n="miningTitle">Kaspa Mining Calculator</h2>
+    <p data-i18n="miningText">Plan revenue, electricity cost, net profit and break-even in USD.</p>
+    <div class="calculator">
+      <label data-i18n="minerModel">Miner model</label>
+      <select id="minerModel" onchange="calculateMining()">
+        <option value="400|100">KS0 Ultra · 400 GH/s · 100 W</option>
+        <option value="2000|1200">KS2 · 2 TH/s · 1200 W</option>
+        <option value="8000|3200">KS3 · 8 TH/s · 3200 W</option>
+        <option value="20000|3400">KS5 · 20 TH/s · 3400 W</option>
+      </select>
+      <label data-i18n="kasMined">KAS mined per day</label><input id="kasPerDay" type="number" value="3.5" step="0.01" oninput="calculateMining()">
+      <label data-i18n="kasPrice">KAS price in $</label><input id="kasPrice" type="number" value="0.08" step="0.001" oninput="calculateMining()">
+      <label data-i18n="electricityPrice">Electricity price $/kWh</label><input id="powerPrice" type="number" value="0.12" step="0.01" oninput="calculateMining()">
+      <label data-i18n="hardwareCost">Hardware cost $</label><input id="hardwareCost" type="number" value="300" step="1" oninput="calculateMining()">
+    </div>
+  </div>
+  <div class="result-card" id="miningResult"></div>
+</section>
+
+<section id="support" class="section">
+  <div class="section-title">
+    <div>
+      <p class="eyebrow">Support KEI</p>
+      <h2 data-i18n="supportTitle">Support KEI Development</h2>
+      <p class="muted" data-i18n="supportSubtitle">Help fund ecosystem research, analytics, infrastructure and future development.</p>
+    </div>
+  </div>
+
+  <div class="two-col support-grid">
+    <div class="result-card support-card">
+      <h3>Kaspa (KAS)</h3>
+      <p class="muted" data-i18n="supportKasText">Support ecosystem research and development.</p>
+      <code id="kasAddress">kaspa:qpmxsyapzykf6ml657qfeg2n2ahss9tqvekgr92hhngqrj0wx4njwdgj3x96e</code>
+      <div class="card-actions">
+        <button class="btn secondary" data-i18n="copyAddress" onclick="copySupportAddress('kasAddress', this)">Copy Address</button>
+        <button class="btn primary" data-i18n="showQR" onclick="toggleQR('kasQR')">Show QR</button>
+      </div>
+      <div id="kasQR" class="qr-box hidden">
+        <img alt="KAS donation QR" src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=kaspa:qpmxsyapzykf6ml657qfeg2n2ahss9tqvekgr92hhngqrj0wx4njwdgj3x96e">
+        <small class="muted" data-i18n="scanKas">Scan to support with KAS</small>
+      </div>
+    </div>
+
+    <div class="result-card support-card">
+      <h3>Kasplex / IGRA</h3>
+      <p class="muted" data-i18n="supportIgraText">Optional support wallet.</p>
+      <code id="igraAddress">0xAFf9c2Ed3dea1f3a6627b9B7d7957146d13Fc8AB</code>
+      <div class="card-actions">
+        <button class="btn secondary" data-i18n="copyAddress" onclick="copySupportAddress('igraAddress', this)">Copy Address</button>
+        <button class="btn primary" data-i18n="showQR" onclick="toggleQR('igraQR')">Show QR</button>
+      </div>
+      <div id="igraQR" class="qr-box hidden">
+        <img alt="Kasplex / IGRA donation QR" src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=0xAFf9c2Ed3dea1f3a6627b9B7d7957146d13Fc8AB">
+        <small class="muted" data-i18n="scanIgra">Scan to support with Kasplex / IGRA</small>
+      </div>
+    </div>
+  </div>
+
+  <div class="legalBox support-note" data-i18n="supportDisclaimer">
+    Support is completely voluntary. Donations do not provide ownership, equity, tokens,
+    future rewards, investment rights or profit participation.
+  </div>
+</section>
+
+</main>
+
+<div id="modal" class="modal hidden" onclick="closeModal(event)"><div class="modal-card" id="modalCard"></div></div>
+<footer class="terminal-footer"><span>Last updated: demo</span><span>● Live Data Ready</span><span>Data sources: CoinGecko, GitHub, DefiLlama, Kaspa APIs</span><span>Auto-refresh: 60s</span></footer>
+<script src="app.js"></script>
+</body>
+</html>
