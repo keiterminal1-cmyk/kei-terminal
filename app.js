@@ -488,3 +488,48 @@ window.addEventListener("load", () => {
     }
   }, 1200);
 });
+
+
+/* v3.4 Ecosystem Pulse */
+function renderEcosystemPulse(){
+  const live = projects.filter(p => p.live?.source === "CoinGecko" || p.live?.status === "live").length;
+  const derived = projects.filter(p => (p.live?.source || "").includes("Derived") || p.live?.status === "derived").length;
+  const manual = Math.max(0, projects.length - live - derived);
+
+  const dataQuality = projects.length
+    ? Math.round(((live * 100) + (derived * 65) + (manual * 35)) / projects.length)
+    : 0;
+
+  const avgRisk = projects.length
+    ? Math.round(projects.reduce((a,p)=>a+dynamicRiskScore(p),0)/projects.length)
+    : 0;
+
+  const gainers = projects
+    .filter(p => typeof p.live?.priceChange24h === "number")
+    .sort((a,b)=>b.live.priceChange24h-a.live.priceChange24h);
+
+  const top = gainers[0];
+
+  const liveEl = document.getElementById("pulseLiveAssets");
+  const qualityEl = document.getElementById("pulseDataQuality");
+  const gainEl = document.getElementById("pulseTopGainer");
+  const riskEl = document.getElementById("pulseAvgRisk");
+
+  if(liveEl) liveEl.textContent = live + "/" + projects.length;
+  if(qualityEl) qualityEl.textContent = dataQuality + "/100";
+  if(gainEl) gainEl.textContent = top ? `${top.symbol} ${top.live.priceChange24h > 0 ? "+" : ""}${top.live.priceChange24h.toFixed(2)}%` : "--";
+  if(riskEl) riskEl.textContent = avgRisk + "/100";
+}
+
+/* Patch renderAll to include pulse */
+const originalRenderAll_v34 = typeof renderAll === "function" ? renderAll : null;
+if(originalRenderAll_v34){
+  renderAll = function(){
+    originalRenderAll_v34();
+    renderEcosystemPulse();
+  }
+}
+
+window.addEventListener("load", () => {
+  setTimeout(renderEcosystemPulse, 1400);
+});

@@ -83,3 +83,10 @@ v1.6: Added Support KEI donation section.
 - Shows MANUAL badge for demo/manual assets
 - Ranking cards now show data status
 - Footer explains data status types
+
+## v3.4 Ecosystem Pulse
+- New Ecosystem Pulse section
+- Live assets counter
+- Data quality score
+- Top gainer from 24h change
+- Average dynamic risk score

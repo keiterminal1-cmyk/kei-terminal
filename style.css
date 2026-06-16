@@ -82,3 +82,38 @@
   margin-left:0;
   margin-right:6px;
 }
+
+/* v3.4 Ecosystem Pulse */
+.pulse-section{padding-top:14px}
+.pulse-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:14px;
+}
+.pulse-card{
+  border:1px solid var(--border);
+  background:linear-gradient(180deg,rgba(10,47,35,.86),rgba(8,29,23,.75));
+  border-radius:18px;
+  padding:18px;
+  box-shadow:var(--shadow);
+}
+.pulse-card span{
+  display:block;
+  color:var(--muted);
+  font-weight:800;
+}
+.pulse-card strong{
+  display:block;
+  color:var(--accent);
+  font-size:28px;
+  margin:12px 0 6px;
+}
+.pulse-card small{
+  color:var(--muted);
+}
+@media(max-width:900px){
+  .pulse-grid{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:560px){
+  .pulse-grid{grid-template-columns:1fr}
+}
