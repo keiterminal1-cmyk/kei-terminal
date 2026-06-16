@@ -170,3 +170,96 @@ window.addEventListener("load", () => {
   setTimeout(fetchKasLiveData, 800);
   setInterval(fetchKasLiveData, 60000);
 });
+
+
+/* v3.1 Multi Asset Live Data
+   CoinGecko IDs:
+   KAS   -> kaspa
+   KSKD  -> kaskad
+   IGRA  -> igra
+   iKAS  -> derived 1:1 from KAS
+*/
+const KEI_LIVE_IDS = {
+  KAS: "kaspa",
+  KSKD: "kaskad",
+  IGRA: "igra"
+};
+
+function updateProjectFromCoinGecko(symbol, cgData){
+  const p = projects.find(x => (x.symbol || "").toUpperCase() === symbol);
+  if(!p || !cgData) return false;
+
+  if(typeof cgData.usd === "number") p.price = cgData.usd;
+  if(typeof cgData.usd_market_cap === "number") p.marketCap = cgData.usd_market_cap;
+  if(typeof cgData.usd_24h_vol === "number") p.volume24h = cgData.usd_24h_vol;
+
+  p.live = p.live || {};
+  p.live.priceChange24h = typeof cgData.usd_24h_change === "number" ? cgData.usd_24h_change : null;
+  p.live.lastUpdatedAt = cgData.last_updated_at || null;
+  p.live.source = "CoinGecko";
+  p.live.status = typeof cgData.usd === "number" ? "live" : "no-price";
+  return typeof cgData.usd === "number";
+}
+
+function deriveIKasFromKas(){
+  const kas = projects.find(x => (x.symbol || "").toUpperCase() === "KAS");
+  const ikas = projects.find(x => (x.symbol || "").toUpperCase() === "IKAS");
+  if(!kas || !ikas || !kas.price) return false;
+
+  ikas.price = kas.price;
+  ikas.marketCap = 0;
+  ikas.volume24h = 0;
+  ikas.live = ikas.live || {};
+  ikas.live.priceChange24h = kas.live?.priceChange24h ?? null;
+  ikas.live.lastUpdatedAt = kas.live?.lastUpdatedAt ?? null;
+  ikas.live.source = "Derived from KAS 1:1";
+  ikas.live.status = "derived";
+  return true;
+}
+
+async function fetchEcosystemLiveData(){
+  const status = document.getElementById("apiStatus");
+  if(status) status.textContent = lang === "de" ? "Lade KEI Live-Daten..." : "Loading KEI live data...";
+
+  try{
+    const ids = Object.values(KEI_LIVE_IDS).join(",");
+    const url = "https://api.coingecko.com/api/v3/simple/price?ids=" + encodeURIComponent(ids) + "&vs_currencies=usd&include_market_cap=true&include_24hr_vol=true&include_24hr_change=true&include_last_updated_at=true";
+    const res = await fetch(url, { headers: { "accept": "application/json" } });
+    if(!res.ok) throw new Error("CoinGecko API error " + res.status);
+
+    const data = await res.json();
+
+    let updated = 0;
+    if(updateProjectFromCoinGecko("KAS", data.kaspa)) updated++;
+    if(updateProjectFromCoinGecko("KSKD", data.kaskad)) updated++;
+    if(updateProjectFromCoinGecko("IGRA", data.igra)) updated++;
+    if(deriveIKasFromKas()) updated++;
+
+    renderAll();
+
+    if(status){
+      status.textContent = lang === "de"
+        ? "Live-Daten aktualisiert: " + updated + " Assets"
+        : "Live data updated: " + updated + " assets";
+    }
+  }catch(e){
+    console.error(e);
+    if(status) status.textContent = lang === "de"
+      ? "Live-Daten nicht verfügbar – Demo-/abgeleitete Daten aktiv"
+      : "Live data unavailable – demo/derived data active";
+  }
+}
+
+/* Override public live buttons */
+async function fetchAllLiveData(){
+  await fetchEcosystemLiveData();
+}
+async function fetchKasLiveData(){
+  await fetchEcosystemLiveData();
+}
+
+/* Auto-refresh multi-asset live data */
+window.addEventListener("load", () => {
+  setTimeout(fetchEcosystemLiveData, 900);
+  setInterval(fetchEcosystemLiveData, 60000);
+});

@@ -60,3 +60,11 @@ v1.6: Added Support KEI donation section.
 - Auto-refresh every 60 seconds
 - No backend required for KAS live data
 - IGRA, KSKD, iKAS and ZAP remain demo/manual until verified sources are added
+
+## v3.1 Ecosystem Live Data
+- KAS live via CoinGecko ID: kaspa
+- KSKD live via CoinGecko ID: kaskad
+- IGRA live via CoinGecko ID: igra if CoinGecko returns market data
+- iKAS derived from KAS 1:1 as wrapped KAS gas token
+- ZAP remains demo/manual
+- Auto-refresh every 60 seconds

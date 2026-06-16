@@ -108,8 +108,8 @@
       "Early"
     ],
     "api": {
-      "provider": "manual",
-      "id": ""
+      "provider": "coingecko",
+      "id": "igra"
     },
     "github": [],
     "defillama": {
@@ -165,8 +165,8 @@
       "Early"
     ],
     "api": {
-      "provider": "manual",
-      "id": ""
+      "provider": "coingecko",
+      "id": "kaskad"
     },
     "github": [],
     "defillama": {
@@ -222,15 +222,16 @@
       "High Risk"
     ],
     "api": {
-      "provider": "manual",
-      "id": ""
+      "provider": "derived",
+      "id": "kaspa"
     },
     "github": [],
     "defillama": {
       "slug": ""
     },
     "live": {
-      "priceChange24h": 1.49
+      "priceChange24h": 1.49,
+      "source": "Derived from KAS 1:1"
     }
   },
   {
