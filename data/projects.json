@@ -1,0 +1,293 @@
+[
+  {
+    "id": "kaspa",
+    "name": "Kaspa",
+    "symbol": "KAS",
+    "logoText": "KAS",
+    "addedAt": "2025-01-01",
+    "category": {
+      "en": "Layer 1 / PoW",
+      "de": "Layer 1 / PoW"
+    },
+    "price": 0.08,
+    "marketCap": 2100000000,
+    "volume24h": 58000000,
+    "description": {
+      "en": "Fast Proof-of-Work network using BlockDAG architecture. Core asset of the Kaspa ecosystem.",
+      "de": "Schnelles Proof-of-Work-Netzwerk mit BlockDAG-Architektur. Kernwert des Kaspa-Ökosystems."
+    },
+    "development": 92,
+    "adoption": 88,
+    "liquidity": 82,
+    "community": 94,
+    "fundamentals": 90,
+    "riskRaw": 22,
+    "momentumRaw": 86,
+    "risk": {
+      "en": "Low",
+      "de": "Niedrig"
+    },
+    "momentum": {
+      "en": "Strong",
+      "de": "Stark"
+    },
+    "thesis": {
+      "en": "Kaspa is the core asset of the ecosystem. Key drivers are mining, speed, community strength, and future programmability.",
+      "de": "Kaspa ist der Kernwert des Ökosystems. Treiber sind Mining, Geschwindigkeit, Community-Stärke und zukünftige Programmierbarkeit."
+    },
+    "watchReason": {
+      "en": "Base asset of the Kaspa ecosystem.",
+      "de": "Basiswert des Kaspa-Ökosystems."
+    },
+    "tags": [
+      "L1",
+      "PoW",
+      "Mining",
+      "BlockDAG"
+    ],
+    "api": {
+      "provider": "coingecko",
+      "id": "kaspa"
+    },
+    "github": [
+      {
+        "owner": "kaspanet",
+        "repo": "rusty-kaspa"
+      }
+    ],
+    "defillama": {
+      "slug": ""
+    },
+    "live": {
+      "priceChange24h": 3.45
+    }
+  },
+  {
+    "id": "igra",
+    "name": "IGRA",
+    "symbol": "IGRA",
+    "logoText": "IGRA",
+    "addedAt": "2026-06-16",
+    "category": {
+      "en": "Kaspa L2 / DeFi",
+      "de": "Kaspa L2 / DeFi"
+    },
+    "price": 0.015,
+    "marketCap": 12000000,
+    "volume24h": 420000,
+    "description": {
+      "en": "Early Kaspa ecosystem project focused on DeFi and L2 infrastructure.",
+      "de": "Frühes Kaspa-Ökosystem-Projekt mit Fokus auf DeFi- und L2-Infrastruktur."
+    },
+    "development": 72,
+    "adoption": 58,
+    "liquidity": 55,
+    "community": 69,
+    "fundamentals": 65,
+    "riskRaw": 55,
+    "momentumRaw": 72,
+    "risk": {
+      "en": "Medium",
+      "de": "Mittel"
+    },
+    "momentum": {
+      "en": "Building",
+      "de": "Im Aufbau"
+    },
+    "thesis": {
+      "en": "IGRA may benefit if Kaspa DeFi and L2 adoption grow. Risk remains high while real usage and liquidity are still early.",
+      "de": "IGRA könnte profitieren, wenn Kaspa-DeFi und L2-Nutzung wachsen. Das Risiko bleibt erhöht, solange echte Nutzung und Liquidität noch früh sind."
+    },
+    "watchReason": {
+      "en": "Early DeFi/L2 candidate in the Kaspa ecosystem.",
+      "de": "Früher DeFi/L2-Kandidat im Kaspa-Ökosystem."
+    },
+    "tags": [
+      "L2",
+      "DeFi",
+      "Early"
+    ],
+    "api": {
+      "provider": "manual",
+      "id": ""
+    },
+    "github": [],
+    "defillama": {
+      "slug": ""
+    },
+    "live": {
+      "priceChange24h": 6.72
+    }
+  },
+  {
+    "id": "kskd",
+    "name": "Kaskad",
+    "symbol": "KSKD",
+    "logoText": "KSKD",
+    "addedAt": "2026-06-16",
+    "category": {
+      "en": "DeFi",
+      "de": "DeFi"
+    },
+    "price": 0.021,
+    "marketCap": 8500000,
+    "volume24h": 310000,
+    "description": {
+      "en": "DeFi-oriented Kaspa ecosystem project with early market and staking focus.",
+      "de": "DeFi-orientiertes Kaspa-Ökosystem-Projekt mit frühem Markt- und Staking-Fokus."
+    },
+    "development": 63,
+    "adoption": 51,
+    "liquidity": 48,
+    "community": 62,
+    "fundamentals": 57,
+    "riskRaw": 68,
+    "momentumRaw": 61,
+    "risk": {
+      "en": "Medium-High",
+      "de": "Mittel-Hoch"
+    },
+    "momentum": {
+      "en": "Volatile",
+      "de": "Volatil"
+    },
+    "thesis": {
+      "en": "KSKD is speculative but potentially high-upside. TVL, user growth and real DeFi usage are critical.",
+      "de": "KSKD ist spekulativ, aber potenziell chancenreich. Entscheidend sind TVL, Nutzerwachstum und echte DeFi-Nutzung."
+    },
+    "watchReason": {
+      "en": "Volatile early-stage DeFi asset.",
+      "de": "Volatiler DeFi-Frühphasenwert."
+    },
+    "tags": [
+      "DeFi",
+      "Staking",
+      "Early"
+    ],
+    "api": {
+      "provider": "manual",
+      "id": ""
+    },
+    "github": [],
+    "defillama": {
+      "slug": "kaskad"
+    },
+    "live": {
+      "priceChange24h": 2.18
+    }
+  },
+  {
+    "id": "ikas",
+    "name": "iKAS",
+    "symbol": "iKAS",
+    "logoText": "iKAS",
+    "addedAt": "2026-06-16",
+    "category": {
+      "en": "Synthetic / DeFi",
+      "de": "Synthetic / DeFi"
+    },
+    "price": 0.006,
+    "marketCap": 2400000,
+    "volume24h": 95000,
+    "description": {
+      "en": "Kaspa-related asset for DeFi strategies and liquidity applications.",
+      "de": "Kaspa-nahes Asset für DeFi-Strategien und Liquiditätsanwendungen."
+    },
+    "development": 52,
+    "adoption": 39,
+    "liquidity": 42,
+    "community": 45,
+    "fundamentals": 46,
+    "riskRaw": 78,
+    "momentumRaw": 48,
+    "risk": {
+      "en": "High",
+      "de": "Hoch"
+    },
+    "momentum": {
+      "en": "Early",
+      "de": "Frühphase"
+    },
+    "thesis": {
+      "en": "iKAS is only attractive if it gains clear DeFi utility. Without liquidity and adoption, risk remains very high.",
+      "de": "iKAS ist nur interessant, wenn es einen klaren DeFi-Nutzen erhält. Ohne Liquidität und Nutzung bleibt das Risiko sehr hoch."
+    },
+    "watchReason": {
+      "en": "Early high-risk DeFi asset.",
+      "de": "Frühes High-Risk-DeFi-Asset."
+    },
+    "tags": [
+      "Synthetic",
+      "DeFi",
+      "High Risk"
+    ],
+    "api": {
+      "provider": "manual",
+      "id": ""
+    },
+    "github": [],
+    "defillama": {
+      "slug": ""
+    },
+    "live": {
+      "priceChange24h": 1.49
+    }
+  },
+  {
+    "id": "zap",
+    "name": "ZAP",
+    "symbol": "ZAP",
+    "logoText": "ZAP",
+    "addedAt": "2026-06-16",
+    "category": {
+      "en": "Launch / Discovery",
+      "de": "Launch / Discovery"
+    },
+    "price": 0.0,
+    "marketCap": 0,
+    "volume24h": 0,
+    "description": {
+      "en": "Ecosystem discovery placeholder for early Kaspa-related launches.",
+      "de": "Ecosystem-Discovery-Platzhalter für frühe Kaspa-bezogene Launches."
+    },
+    "development": 45,
+    "adoption": 35,
+    "liquidity": 25,
+    "community": 50,
+    "fundamentals": 40,
+    "riskRaw": 82,
+    "momentumRaw": 55,
+    "risk": {
+      "en": "High",
+      "de": "Hoch"
+    },
+    "momentum": {
+      "en": "Early",
+      "de": "Frühphase"
+    },
+    "thesis": {
+      "en": "ZAP is tracked as an early ecosystem signal. Add real data sources before public use.",
+      "de": "ZAP wird als frühes Ökosystem-Signal getrackt. Vor öffentlicher Nutzung echte Datenquellen ergänzen."
+    },
+    "watchReason": {
+      "en": "Early ecosystem discovery candidate.",
+      "de": "Früher Ecosystem-Discovery-Kandidat."
+    },
+    "tags": [
+      "Launch",
+      "Early",
+      "Discovery"
+    ],
+    "api": {
+      "provider": "manual",
+      "id": ""
+    },
+    "github": [],
+    "defillama": {
+      "slug": ""
+    },
+    "live": {
+      "priceChange24h": null
+    }
+  }
+]

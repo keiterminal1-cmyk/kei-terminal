@@ -1,0 +1,28 @@
+[
+  {
+    "date": "Demo",
+    "project": "Kaspa Radar",
+    "source": "Internal",
+    "impact": {
+      "en": "High",
+      "de": "Hoch"
+    },
+    "title": {
+      "en": "v1.4 stable fixes Core Top-5 rendering.",
+      "de": "v1.4 stable repariert die Core Top-5 Anzeige."
+    }
+  },
+  {
+    "date": "Demo",
+    "project": "Core",
+    "source": "Internal",
+    "impact": {
+      "en": "Medium",
+      "de": "Mittel"
+    },
+    "title": {
+      "en": "Core ecosystem row now renders even with fallback data.",
+      "de": "Core-Ecosystem-Leiste rendert jetzt auch mit Fallback-Daten."
+    }
+  }
+]
