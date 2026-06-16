@@ -51,3 +51,12 @@ v1.6: Added Support KEI donation section.
 - Admin section removed from public page
 - Visitors only see the public KEI terminal
 - Internal editing should be done locally before deployment or later via protected backend
+
+## v3 KAS Live Data
+- KAS price loads live from CoinGecko
+- KAS market cap loads live
+- KAS 24h volume loads live
+- KAS 24h change loads live
+- Auto-refresh every 60 seconds
+- No backend required for KAS live data
+- IGRA, KSKD, iKAS and ZAP remain demo/manual until verified sources are added

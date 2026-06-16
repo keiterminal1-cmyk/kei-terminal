@@ -117,3 +117,56 @@ function toggleQR(id){
   const el = document.getElementById(id);
   if(el) el.classList.toggle("hidden");
 }
+
+
+/* v3 KAS Live Data - CoinGecko, frontend only */
+async function fetchKasLiveData(){
+  const status = document.getElementById("apiStatus");
+  if(status) status.textContent = lang === "de" ? "Lade KAS Live-Daten..." : "Loading KAS live data...";
+
+  try{
+    const url = "https://api.coingecko.com/api/v3/simple/price?ids=kaspa&vs_currencies=usd&include_market_cap=true&include_24hr_vol=true&include_24hr_change=true&include_last_updated_at=true";
+    const res = await fetch(url, { headers: { "accept": "application/json" } });
+    if(!res.ok) throw new Error("CoinGecko API error " + res.status);
+
+    const data = await res.json();
+    const kas = data.kaspa;
+    if(!kas) throw new Error("No KAS data returned");
+
+    const p = projects.find(x => (x.symbol || "").toUpperCase() === "KAS");
+    if(p){
+      p.price = kas.usd ?? p.price;
+      p.marketCap = kas.usd_market_cap ?? p.marketCap;
+      p.volume24h = kas.usd_24h_vol ?? p.volume24h;
+      p.live = p.live || {};
+      p.live.priceChange24h = kas.usd_24h_change ?? null;
+      p.live.lastUpdatedAt = kas.last_updated_at ?? null;
+      p.live.source = "CoinGecko";
+    }
+
+    renderAll();
+
+    if(status){
+      const time = kas.last_updated_at ? new Date(kas.last_updated_at * 1000).toLocaleTimeString() : "";
+      status.textContent = lang === "de"
+        ? "KAS Live-Daten aktualisiert " + time
+        : "KAS live data updated " + time;
+    }
+  }catch(e){
+    console.error(e);
+    if(status) status.textContent = lang === "de"
+      ? "KAS Live-Daten nicht verfügbar – Demo-Daten aktiv"
+      : "KAS live data unavailable – demo data active";
+  }
+}
+
+/* Public live button loads KAS directly */
+async function fetchAllLiveData(){
+  await fetchKasLiveData();
+}
+
+/* Auto-load KAS after normal app initialization */
+window.addEventListener("load", () => {
+  setTimeout(fetchKasLiveData, 800);
+  setInterval(fetchKasLiveData, 60000);
+});
